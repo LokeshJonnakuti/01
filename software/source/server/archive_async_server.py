@@ -11,7 +11,6 @@ import os
 import importlib.util
 
 
-
 os.environ["STT_RUNNER"] = "server"
 os.environ["TTS_RUNNER"] = "server"
 
@@ -104,7 +103,7 @@ async def main(server_host, server_port, profile, debug):
     # Get the interpreter from the profile
     interpreter = profile_module.interpreter
 
-    if not hasattr(interpreter, 'tts'):
+    if not hasattr(interpreter, "tts"):
         print("Setting TTS provider to default: openai")
         interpreter.tts = "openai"
 

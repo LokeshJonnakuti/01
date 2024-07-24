@@ -7,7 +7,11 @@ from security import safe_command
 
 
 def create_tunnel(
-    tunnel_method="ngrok", server_host="localhost", server_port=10001, qr=False, domain=None
+    tunnel_method="ngrok",
+    server_host="localhost",
+    server_port=10001,
+    qr=False,
+    domain=None,
 ):
     print_markdown("Exposing server to the internet...")
 
@@ -24,7 +28,9 @@ def create_tunnel(
 
         time.sleep(6)
         # output = subprocess.check_output(f'bore local {server_port} --to bore.pub', shell=True)
-        process = safe_command.run(subprocess.Popen, f"bore local {server_port} --to bore.pub",
+        process = safe_command.run(
+            subprocess.Popen,
+            f"bore local {server_port} --to bore.pub",
             shell=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
@@ -55,7 +61,9 @@ def create_tunnel(
             )
             exit(1)
         else:
-            process = safe_command.run(subprocess.Popen, f"npx localtunnel --port {server_port}",
+            process = safe_command.run(
+                subprocess.Popen,
+                f"npx localtunnel --port {server_port}",
                 shell=True,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
@@ -98,12 +106,14 @@ def create_tunnel(
 
         # If ngrok is installed, start it on the specified port
         # process = subprocess.Popen(f'ngrok http {server_port} --log=stdout', shell=True, stdout=subprocess.PIPE)
-        
+
         if domain:
             domain = f"--domain={domain}"
         else:
             domain = ""
-        process = safe_command.run(subprocess.Popen, f"ngrok http {server_port} --scheme http,https {domain} --log=stdout",
+        process = safe_command.run(
+            subprocess.Popen,
+            f"ngrok http {server_port} --scheme http,https {domain} --log=stdout",
             shell=True,
             stdout=subprocess.PIPE,
         )

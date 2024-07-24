@@ -18,7 +18,7 @@ class ViewController: UIViewController, WebSocketDelegate {
     @IBOutlet weak var circle: UIImageView!
     @IBOutlet weak var settingsGear: UIImageView!
     @IBOutlet weak var infoText: UILabel!
-    
+
     var audioRecordingInstance: AudioRecording?
     private var audioData = Data()
     private var audioPlayer: AVAudioPlayer?
@@ -28,7 +28,7 @@ class ViewController: UIViewController, WebSocketDelegate {
     var terminal = false
     var socket: WebSocket?
 
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         terminalFeed.layer.cornerRadius = 15
@@ -39,30 +39,30 @@ class ViewController: UIViewController, WebSocketDelegate {
         circle.addGestureRecognizer(pressGesture)
         circle.isUserInteractionEnabled = true
         circle.translatesAutoresizingMaskIntoConstraints = false
-        
+
         // Create a geature recognizer for the settings button
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(settingsGear(_:)))
         settingsGear.addGestureRecognizer(tapGesture)
         settingsGear.isUserInteractionEnabled = true
-        
-        
+
+
         let reconnectGesture = UITapGestureRecognizer(target: self, action: #selector(recconectIcon(_:)))
         reconnectIcon.addGestureRecognizer(reconnectGesture)
         reconnectIcon.isUserInteractionEnabled = true
-        
-        
+
+
         let terminal = UITapGestureRecognizer(target: self, action: #selector(terminalIcon(_:)))
         terminalButton.addGestureRecognizer(terminal)
         terminalButton.isUserInteractionEnabled = true
-        
-        
-    }
-    
 
-    
-    
-    
-    
+
+    }
+
+
+
+
+
+
     func checkRecordingPerms() {
         let sess = AVAudioSession.sharedInstance()
         switch (sess.recordPermission) {
@@ -83,7 +83,7 @@ class ViewController: UIViewController, WebSocketDelegate {
             break
         }
     }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         if ((UserDefaults.standard.value(forKey: "IPINFO")) != nil) {
             print("here")
@@ -95,15 +95,15 @@ class ViewController: UIViewController, WebSocketDelegate {
         }
         checkRecordingPerms()
     }
-    
+
     func receieved(data: String) {
         infoText.text = data
     }
-    
 
-    
-    
-    
+
+
+
+
     func setAddress() {
         let alert = UIAlertController(title: "Set the Address", message: "Input the address of the WebSocket (found in the terminal running 01 software)", preferredStyle: .alert)
         alert.addTextField { (field) in
@@ -120,15 +120,15 @@ class ViewController: UIViewController, WebSocketDelegate {
             }
         }
         alert.addAction(submitButton)
-        
+
         present(alert, animated: true)
     }
-    
+
     @objc func recconectIcon(_ sender: UIGestureRecognizer) {
         infoText.text = ""
         self.establishConnection()
     }
-    
+
     @objc func terminalIcon(_ sender: UIGestureRecognizer) {
         if (terminal) {
             UIView.animate(withDuration: 0.3) {
@@ -152,18 +152,18 @@ class ViewController: UIViewController, WebSocketDelegate {
 
         }
     }
-    
+
     @objc func settingsGear(_ sender: UIGestureRecognizer) {
         infoText.text = ""
         setAddress()
     }
-    
+
     func appendTranslation(transform: CGAffineTransform) {
         var currentTransform = self.circle.transform
         currentTransform = currentTransform.concatenating(transform)
         self.circle.transform = currentTransform
     }
-    
+
     @objc func buttonPress(_ sender: UILongPressGestureRecognizer) {
         infoText.text = ""
         let feedback = UIImpactFeedbackGenerator(style: .medium)
@@ -197,7 +197,7 @@ class ViewController: UIViewController, WebSocketDelegate {
                 } completion: { _ in
                     self.circle.tintColor = .systemYellow
                 }
-                
+
 
             }
         } else if sender.state == .ended {
@@ -219,11 +219,11 @@ class ViewController: UIViewController, WebSocketDelegate {
             // stop recording and send the audio
         }
     }
-    
-    
-    
 
-    
+
+
+
+
     func establishConnection() { //connect to the web socket
         if (address != nil) {
             var request = URLRequest(url: URL(string: "http://\(address!)")!)
@@ -296,7 +296,7 @@ class ViewController: UIViewController, WebSocketDelegate {
                        break
             }
     }
-    
+
 
 
     func createWAVHeader(audioDataSize: Int32) -> Data {
@@ -346,7 +346,7 @@ class ViewController: UIViewController, WebSocketDelegate {
         return Data(bytes: &value, count: MemoryLayout<Int32>.size)
     }
 
-    
+
     func sendAudio(audio: Data) {
         if (isConnected) {
             socket!.write(string: "{\"role\": \"user\", \"type\": \"audio\", \"format\": \"bytes.raw\", \"start\": true}")
@@ -356,11 +356,9 @@ class ViewController: UIViewController, WebSocketDelegate {
             print("Not connected!")
         }
     }
-    
 
-    
 
-    
+
+
+
 }
-
-

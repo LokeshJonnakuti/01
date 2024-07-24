@@ -5,19 +5,21 @@ import pytest
 import subprocess
 import time
 
+
 def test_poetry_run_01():
-    process = subprocess.Popen(['poetry', 'run', '01'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    process = subprocess.Popen(
+        ["poetry", "run", "01"], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+    )
     timeout = time.time() + 30  # 30 seconds from now
 
     while True:
-        output = process.stdout.readline().decode('utf-8')
+        output = process.stdout.readline().decode("utf-8")
         if "Hold spacebar to record." in output:
             assert True
             return
         if time.time() > timeout:
             assert False, "Timeout reached without finding expected output."
             return
-
 
 
 # @pytest.mark.skip(reason="pytest hanging")

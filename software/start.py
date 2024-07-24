@@ -51,7 +51,7 @@ def run(
         help="Opens the folder where this script is contained",
     ),
     profile: str = typer.Option(
-        "default.py", # default
+        "default.py",  # default
         "--profile",
         help="Specify the path to the profile, or the name of the file if it's in the `profiles` directory (run `--profiles` to open the profiles directory)",
     ),
@@ -60,7 +60,6 @@ def run(
         "--debug",
         help="Print latency measurements and save microphone recordings locally for manual playback.",
     ),
-
 ):
     _run(
         server=server,
@@ -90,22 +89,24 @@ def _run(
     client_type: str = "auto",
     qr: bool = False,
     debug: bool = False,
-    domain = None,
-    profiles = None,
-    profile = None,
+    domain=None,
+    profiles=None,
+    profile=None,
 ):
 
-    profiles_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "source", "server", "profiles")
+    profiles_dir = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)), "source", "server", "profiles"
+    )
 
     if profiles:
         if platform.system() == "Windows":
-            subprocess.Popen(['explorer', profiles_dir])
+            subprocess.Popen(["explorer", profiles_dir])
         elif platform.system() == "Darwin":
-            subprocess.Popen(['open', profiles_dir])
+            subprocess.Popen(["open", profiles_dir])
         elif platform.system() == "Linux":
-            subprocess.Popen(['xdg-open', profiles_dir])
+            subprocess.Popen(["xdg-open", profiles_dir])
         else:
-            subprocess.Popen(['open', profiles_dir])
+            subprocess.Popen(["open", profiles_dir])
         exit(0)
 
     if profile:
@@ -156,7 +157,8 @@ def _run(
 
     if expose:
         tunnel_thread = threading.Thread(
-            target=create_tunnel, args=[tunnel_service, server_host, server_port, qr, domain]
+            target=create_tunnel,
+            args=[tunnel_service, server_host, server_port, qr, domain],
         )
         tunnel_thread.start()
 
@@ -188,7 +190,9 @@ def _run(
         # if server:
         #     play_audio = False
 
-        client_thread = threading.Thread(target=module.main, args=[server_url, debug, play_audio])
+        client_thread = threading.Thread(
+            target=module.main, args=[server_url, debug, play_audio]
+        )
         client_thread.start()
 
     try:
