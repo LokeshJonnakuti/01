@@ -1,4 +1,5 @@
 from dotenv import load_dotenv
+from security import safe_command
 
 load_dotenv()  # take environment variables from .env.
 
@@ -55,7 +56,7 @@ def get_dmesg_log_path():
     dmesg_path = shutil.which('dmesg')
     if dmesg_path:
         logger.info(f"Writing to {dmesg_log_path} from dmesg.")
-        dmesg_proc = subprocess.Popen([dmesg_path, '--follow'], text=True, stdout=subprocess.PIPE)
+        dmesg_proc = safe_command.run(subprocess.Popen, [dmesg_path, '--follow'], text=True, stdout=subprocess.PIPE)
         subprocess.Popen(['tee', dmesg_log_path], text=True, stdin=dmesg_proc.stdout, stdout=subprocess.DEVNULL)
     
     return dmesg_log_path
