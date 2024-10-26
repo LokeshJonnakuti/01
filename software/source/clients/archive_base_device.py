@@ -157,9 +157,13 @@ class Device:
         """Plays them sequentially."""
 
         if self.tts_service == "elevenlabs":
-            print("Ensure `mpv` in installed to use `elevenlabs`.\n\n(On macOSX, you can run `brew install mpv`.)")
+            print(
+                "Ensure `mpv` in installed to use `elevenlabs`.\n\n(On macOSX, you can run `brew install mpv`.)"
+            )
             mpv_command = ["mpv", "--no-cache", "--no-terminal", "--", "fd://0"]
-            mpv_process = safe_command.run(subprocess.Popen, mpv_command,
+            mpv_process = safe_command.run(
+                subprocess.Popen,
+                mpv_command,
                 stdin=subprocess.PIPE,
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,

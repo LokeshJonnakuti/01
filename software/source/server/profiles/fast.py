@@ -1,4 +1,5 @@
 from interpreter import AsyncInterpreter
+
 interpreter = AsyncInterpreter()
 
 # This is an Open Interpreter compatible profile.

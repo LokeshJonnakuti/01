@@ -7,6 +7,7 @@ import types
 import wave
 import os
 
+
 def start_server(server_host, server_port, profile, debug, play_audio):
 
     # Load the profile module from the provided path
@@ -24,7 +25,7 @@ def start_server(server_host, server_port, profile, debug, play_audio):
     interpreter.stt.stop()  # It needs this for some reason
 
     # TTS
-    if not hasattr(interpreter, 'tts'):
+    if not hasattr(interpreter, "tts"):
         print("Setting TTS provider to default: openai")
         interpreter.tts = "openai"
     if interpreter.tts == "coqui":
@@ -44,7 +45,6 @@ def start_server(server_host, server_port, profile, debug, play_audio):
     interpreter.server.port = server_port
     interpreter.play_audio = play_audio
     interpreter.audio_chunks = []
-
 
     ### Swap out the input function for one that supports voice
 
@@ -68,16 +68,15 @@ def start_server(server_host, server_port, profile, debug, play_audio):
 
                 if False:
                     audio_bytes = bytearray(b"".join(self.audio_chunks))
-                    with wave.open('audio.wav', 'wb') as wav_file:
+                    with wave.open("audio.wav", "wb") as wav_file:
                         wav_file.setnchannels(1)
                         wav_file.setsampwidth(2)  # Assuming 16-bit audio
                         wav_file.setframerate(16000)  # Assuming 16kHz sample rate
                         wav_file.writeframes(audio_bytes)
-                    print(os.path.abspath('audio.wav'))
+                    print(os.path.abspath("audio.wav"))
 
                 await old_input({"role": "user", "type": "message", "content": content})
                 await old_input({"role": "user", "type": "message", "end": True})
-
 
     ### Swap out the output function for one that supports voice
 
@@ -100,19 +99,47 @@ def start_server(server_host, server_port, profile, debug, play_audio):
 
                 self.tts.feed(output.get("content"))
 
-                if not self.tts.is_playing() and any([c in delimiters for c in output.get("content")]): # Start playing once the first delimiter is encountered.
-                    self.tts.play_async(on_audio_chunk=self.on_tts_chunk, muted=not self.play_audio, sentence_fragment_delimiters=delimiters, minimum_sentence_length=9)
-                    return {"role": "assistant", "type": "audio", "format": "bytes.wav", "start": True}
+                if not self.tts.is_playing() and any(
+                    [c in delimiters for c in output.get("content")]
+                ):  # Start playing once the first delimiter is encountered.
+                    self.tts.play_async(
+                        on_audio_chunk=self.on_tts_chunk,
+                        muted=not self.play_audio,
+                        sentence_fragment_delimiters=delimiters,
+                        minimum_sentence_length=9,
+                    )
+                    return {
+                        "role": "assistant",
+                        "type": "audio",
+                        "format": "bytes.wav",
+                        "start": True,
+                    }
 
             if output == {"role": "assistant", "type": "message", "end": True}:
-                if not self.tts.is_playing(): # We put this here in case it never outputs a delimiter and never triggers play_async^
-                    self.tts.play_async(on_audio_chunk=self.on_tts_chunk, muted=not self.play_audio, sentence_fragment_delimiters=delimiters, minimum_sentence_length=9)
-                    return {"role": "assistant", "type": "audio", "format": "bytes.wav", "start": True}
-                return {"role": "assistant", "type": "audio", "format": "bytes.wav", "end": True}
+                if (
+                    not self.tts.is_playing()
+                ):  # We put this here in case it never outputs a delimiter and never triggers play_async^
+                    self.tts.play_async(
+                        on_audio_chunk=self.on_tts_chunk,
+                        muted=not self.play_audio,
+                        sentence_fragment_delimiters=delimiters,
+                        minimum_sentence_length=9,
+                    )
+                    return {
+                        "role": "assistant",
+                        "type": "audio",
+                        "format": "bytes.wav",
+                        "start": True,
+                    }
+                return {
+                    "role": "assistant",
+                    "type": "audio",
+                    "format": "bytes.wav",
+                    "end": True,
+                }
 
     def on_tts_chunk(self, chunk):
         self.output_queue.sync_q.put(chunk)
-
 
     # Set methods on interpreter object
     interpreter.input = types.MethodType(new_input, interpreter)

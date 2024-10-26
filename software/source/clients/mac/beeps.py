@@ -6,6 +6,7 @@ import subprocess
 import threading
 import time
 
+
 def beep(sound):
     if "." not in sound:
         sound = sound + ".aiff"
@@ -13,6 +14,7 @@ def beep(sound):
         subprocess.Popen(["afplay", f"/System/Library/Sounds/{sound}"])
     except:
         pass  # No big deal
+
 
 class RepeatedBeep:
     def __init__(self):
@@ -25,7 +27,9 @@ class RepeatedBeep:
         while True:
             if self.running:
                 try:
-                    subprocess.call(["afplay", f"/System/Library/Sounds/{self.sound}.aiff"])
+                    subprocess.call(
+                        ["afplay", f"/System/Library/Sounds/{self.sound}.aiff"]
+                    )
                 except:
                     pass  # No big deal
                 time.sleep(0.6)
@@ -33,10 +37,11 @@ class RepeatedBeep:
 
     def start(self):
         if not self.running:
-            time.sleep(0.6*4)
-            self.running = True   
+            time.sleep(0.6 * 4)
+            self.running = True
 
     def stop(self):
         self.running = False
+
 
 beeper = RepeatedBeep()
