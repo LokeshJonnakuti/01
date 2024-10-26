@@ -2,6 +2,7 @@ import subprocess
 import sys
 import ctypes
 import os
+from security import safe_command
 
 
 def main():
@@ -26,7 +27,7 @@ def main():
     os.chdir(target_directory)
 
     # Run pytest with any additional arguments passed to this script.
-    result = subprocess.run(["pytest"] + sys.argv[1:])
+    result = safe_command.run(subprocess.run, ["pytest"] + sys.argv[1:])
 
     # Exit with pytest's exit code to reflect the test outcome in the pre-commit hook.
     sys.exit(result.returncode)
